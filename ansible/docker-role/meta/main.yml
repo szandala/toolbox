@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  role_name: docker
+  author: Tomasz Szandala
+  description: Docker for Linux hosts
+  company: "Vizard"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.4
+  galaxy_tags:
+    - containers
+    - docker
+dependencies: []

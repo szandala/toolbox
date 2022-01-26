@@ -1,0 +1,24 @@
+---
+- name: Check current docker-compose version.
+  command: "/usr/local/bin/docker-compose --version"
+  register: docker_compose_current_version
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Remove existing docker-compose if it's different.
+  file:
+    path: "/usr/local/bin/docker-compose"
+    state: absent
+  when: >
+    docker_compose_current_version.stdout is defined
+    and docker_compose_version not in docker_compose_current_version.stdout
+
+- name: Install Docker Compose
+  get_url:
+    url: "{{ docker_compose_url }}"
+    dest: "/usr/local/bin/docker-compose"
+    mode: 0755
+  when: >
+    docker_compose_current_version.stdout is not defined
+    or docker_compose_version not in docker_compose_current_version.stdout

@@ -1,26 +1,29 @@
 ---
-- include_tasks: "setup-{{ ansible_os_family }}.yml"
+- name: Run all as root
+  become: yes
+  block:
+  - include_tasks: "setup-{{ ansible_os_family }}.yml"
 
-- name: Install Docker
-  package:
-    name: docker-ce
-  notify: restart_docker
-  ignore_errors: "{{ ansible_check_mode }}"
+  - name: Install Docker
+    package:
+      name: docker-ce
+    notify: restart_docker
+    ignore_errors: "{{ ansible_check_mode }}"
 
-- name: Ensure /etc/docker/ directory exists
-  file:
-    path: /etc/docker
-    state: directory
-    mode: 0755
-  when: docker_daemon_options.keys() | length > 0
+  - name: Ensure /etc/docker/ directory exists
+    file:
+      path: /etc/docker
+      state: directory
+      mode: 0755
+    when: docker_daemon_options.keys() | length > 0
 
-- name: Ensure Docker is started and enabled
-  service:
-    name: docker
-    state: started
-    enabled: yes
+  - name: Ensure Docker is started and enabled
+    service:
+      name: docker
+      state: started
+      enabled: yes
 
-- include_tasks: compose.yml
+  - include_tasks: compose.yml
 
-- include_tasks: docker-users.yml
-  when: docker_users | length > 0
+  - include_tasks: docker-users.yml
+    when: docker_users | length > 0

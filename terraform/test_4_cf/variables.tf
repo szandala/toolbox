@@ -1,3 +1,7 @@
+variable "project_id" {
+  description = "Name of the project"
+}
+
 variable "hostname" {
   description = "Name of hostname to be created"
 }

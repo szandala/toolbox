@@ -1,5 +1,5 @@
 provider "google" {
-  project = "mmllc-test"
+  project = var.project_id
   region  = "us-central1"
 }
 

@@ -11,6 +11,7 @@ resource "cloudflare_tunnel" "server" {
     account_id = var.cf_account_id
     name       = var.hostname
     secret     = random_id.tunnel_secret.b64_std
+    config_src = "cloudflare"
 }
 
 resource "cloudflare_tunnel_config" "server" {
@@ -18,13 +19,13 @@ resource "cloudflare_tunnel_config" "server" {
   tunnel_id  = cloudflare_tunnel.server.id
 
   config {
-    warp_routing {
-      enabled = false
-    }
-    origin_request {
-      connect_timeout = "1m0s"
-      tcp_keep_alive  = "1m0s"
-    }
+    # warp_routing {
+    #   enabled = false
+    # }
+    # origin_request {
+    #   connect_timeout = "1m0s"
+    #   tcp_keep_alive  = "1m0s"
+    # }
     ingress_rule {
       hostname = "${var.hostname}.${var.cf_tunnel_primary_domain}"
       path     = ""
@@ -34,6 +35,7 @@ resource "cloudflare_tunnel_config" "server" {
       service = "http_status:404"
     }
   }
+  depends_on = [ cloudflare_record.tunnel_dns, cloudflare_tunnel.server ]
 }
 
 data "cloudflare_zone" "tunnel" {
